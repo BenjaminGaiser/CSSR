@@ -1,10 +1,11 @@
 ####
 #
-# New R file for Second Pair Assignment
+# New R file for First Pair Assignment
 # Ben Gaiser and Jeremy Russell
 # 30 September 2016
 # Purpose: 
-# Core R Data Set
+# fivethirtyeight data set
+# cite R and R packages used
 # Style Guide:
 #
 ####
@@ -25,21 +26,21 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('base', 'repmis', 'knitr', 'rmarkdown', 'rbundler')
+packages <- c('base', 'repmis', 'knitr', 'rmarkdown')
 for (p in packages) {
-  if (p %in% installed.packages()[,]) library(p, character.only=T)
+  if (p %in% installed.packages()[,1:4]) require(p, character.only=T)
   else {
     install.packages(p)
-    library(p, character.only=T)
+    require(p, character.only=T)
   }
 }
-loaded <- base::lapply(pack, library, character.only = TRUE)
-rm(pack, loaded)
+repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
+rm(packages, p)
 
 # Set working directories and remove from global environment
 
-wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR', 
-            'Add your wrkdir')
+wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
+            '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
 rm(wrkdir)
 
