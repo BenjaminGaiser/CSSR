@@ -5,6 +5,7 @@
 # 30 September 2016
 # Purpose: 
 # fivethirtyeight data set
+# cite R and R packages used
 # Style Guide:
 #
 ####
@@ -27,22 +28,24 @@ getOption("max.print")
 # Load packages and remove from global environment
 packages <- c('base', 'repmis', 'knitr', 'rmarkdown', 'rbundler')
 for (p in packages) {
-  if (p %in% installed.packages()[,]) library(p, character.only=T)
+  if (p %in% installed.packages()[,1:5]) require(p, character.only=T)
   else {
     install.packages(p)
-    library(p, character.only=T)
+    require(p, character.only=T)
   }
 }
-loaded <- base::lapply(pack, library, character.only = TRUE)
+loaded <- base::lapply(packages, library, character.only = TRUE)
 rm(pack, loaded)
 
 # Set working directories and remove from global environment
 
 wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
-            'Add your wrkdir')
+            '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
 rm(wrkdir)
 getwd()
+
+
 
 # Import data frames
 
