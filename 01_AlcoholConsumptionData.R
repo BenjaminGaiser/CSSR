@@ -38,14 +38,11 @@ rm(pack, loaded)
 
 # Set working directories and remove from global environment
 
-wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
+wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR', 
             'Add your wrkdir')
 repmis::set_valid_wd(wrkdir)
 rm(wrkdir)
-getwd()
 
 # Import data frames
 
-drinks <- read.csv("drinks.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE, na.strings = c("", "NA"))
-
-
+AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE, na.strings = c("", "NA"))
