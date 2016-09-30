@@ -42,7 +42,6 @@ wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR',
             'Add your wrkdir')
 repmis::set_valid_wd(wrkdir)
 rm(wrkdir)
-getwd()
 
 # Import data frames
 
