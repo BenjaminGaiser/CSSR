@@ -1,6 +1,11 @@
 ####
 #
-# use headers at the beginning of all R Files -> What the file is for, who is it by, licences/copyrights, etc.
+# New R file for First Pair Assignment
+# Ben Gaiser and Jeremy Russell
+# 30 September 2016
+# Purpose: 
+# fivethirtyeight data set
+# Style Guide:
 #
 ####
 
