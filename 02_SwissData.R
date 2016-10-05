@@ -4,7 +4,7 @@
 # Ben Gaiser and Jeremy Russell
 # 30 September 2016
 # Purpose: 
-# fivethirtyeight data set
+# R Data
 # cite R and R packages used
 # Style Guide:
 #
@@ -26,7 +26,7 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('base', 'repmis', 'knitr', 'rmarkdown')
+packages <- c('base', 'repmis', 'knitr', 'rmarkdown', 'WDI')
 for (p in packages) {
   if (p %in% installed.packages()[,1:4]) require(p, character.only=T)
   else {
@@ -46,4 +46,4 @@ rm(wrkdir)
 
 # Import data frames
 
-CrimeData <- as.data.frame(crimtab) # rename Variable names
+swiss <- as.data.frame(swiss) # rename Variable names
