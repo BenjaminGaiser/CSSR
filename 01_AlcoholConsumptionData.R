@@ -30,7 +30,7 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('repmis', 'knitr', 'rmarkdown', 'ggplot2', 'pastecs')
+packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2', 'pastecs')
 for (p in packages) {
   if (p %in% installed.packages()) require(p, character.only=TRUE) # what does that [] mean
   else {
@@ -52,13 +52,10 @@ rm(wrkdir)
 
 AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", 
                                stringsAsFactors = FALSE, na.strings = c("", "NA"))
-plot(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)
 
 # Initial Descriptive Statistics
-summary(AlcoholConsumption$beer_servings)
-summary(AlcoholConsumption$wine_servings)
-summary(AlcoholConsumption$spirit_servings)
-summary(AlcoholConsumption$total_litres_of_pure_alcohol)
+summary(AlcoholConsumption)
+describe(AlcoholConsumption)
 
 # Create heavy wine/spirit drinker categories and use as factor
 AlcoholConsumption$WineCat1 <- cut(AlcoholConsumption$wine_servings, seq(0, 370, 100))
