@@ -26,7 +26,7 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('base', 'repmis', 'knitr', 'rmarkdown', 'WDI', 'ggplot2')
+packages <- c('repmis', 'knitr', 'rmarkdown', 'ggplot2')
 for (p in packages) {
   if (p %in% installed.packages()[,1:4]) require(p, character.only=T)
   else {
@@ -46,15 +46,45 @@ rm(wrkdir)
 
 # Import data frames
 
-AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE, na.strings = c("", "NA"))
+AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", 
+                               stringsAsFactors = FALSE, na.strings = c("", "NA"))
 
-# Alcohol Consumption -> ggplot it
-plot(AlcoholConsumption$beer_servings)
-plot(AlcoholConsumption$wine_servings)
-plot(AlcoholConsumption$spirit_servings)
-plot(AlcoholConsumption$total_litres_of_pure_alcohol)
+# For intuition
+#c <- ggplot(AlcoholConsumption, aes(beer_servings,
+#                                    total_litres_of_pure_alcohol))
+# Create heavy wine/spirit drinker categories and use as factor
+#d <- c + geom_point()
+# for size
+#c + geom_point(aes(size = qsec))
 
-#
+#p + geom_point(aes(colour = factor(cyl)), size = 4) +
+#  geom_point(colour = "grey90", size = 1.5)
+
+#c + geom_point() + geom_smooth()
+#c + geom_point() + geom_smooth(method = "lm", se = FALSE)
+#c + geom_point() + geom_smooth(method = "lm", se = TRUE)
+summary(AlcoholConsumption$beer_servings)
+summary(AlcoholConsumption$total_litres_of_pure_alcohol)
+
+# Create heavy wine/spirit drinker categories and use as factor
+summary(AlcoholConsumption$wine_servings)
+AlcoholConsumption$WineCat1 <- cut(AlcoholConsumption$wine_servings, seq(0, 370, 50))
+summary(AlcoholConsumption$WineCat1)
+
+ggplotRegression <- function(fit){
+  ggplot(AlcoholConsumption, aes(beer_servings, total_litres_of_pure_alcohol)) +
+    geom_point(aes(colour = factor(AlcoholConsumption$WineCat1))) +
+    scale_colour_discrete(name="Wine Servings") +
+    stat_smooth(method = "lm", col = "red") +
+    labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 3),
+                       "Intercept =",signif(fit$coef[[1]],3 ),
+                       " Slope =",signif(fit$coef[[2]], 1),
+                       " P =",signif(summary(fit)$coef[2,4], 2)))
+}
+FitOfData <- lm(total_litres_of_pure_alcohol ~ beer_servings, data=AlcoholConsumption)
+ggplotRegression(FitOfData)
+
+# Who drinks the most and the least amount of total litres of pure alcohol
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol) # row 16
 head(AlcoholConsumption[16,]) # Belarus
 which.min(AlcoholConsumption$total_litres_of_pure_alcohol) # row 1
@@ -67,11 +97,10 @@ which(grepl("South Africa", AlcoholConsumption$country)) # row 160
 which(grepl("China", AlcoholConsumption$country)) # row 37
 which(grepl("Australia", AlcoholConsumption$country)) # row 9
 
-# Subset for graphs
-subset <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
-ggplot(subset, aes(x = subset$country, 
-                               y = subset$beer_servings)) + geom_point()
+# SubsetOfFiveCountries for graphs
+SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
 
-# WDI?
-WDIsearch(string = "gdp") # GDPPCKD = GDP Per Capita, constant US$, millions
-WDI <- WDI(country = "all", indicator = "NY.GNS.ICTR.GN.ZS", start=2010, end=2010, extra=TRUE, cache=NULL)
+IndividualCountries <- ggplot(SubsetOfFiveCountries, 
+                              aes(beer_servings, total_litres_of_pure_alcohol))
+IndividualCountries + geom_point(aes(colour = factor(country))) +
+  scale_colour_discrete(name="Countries")
