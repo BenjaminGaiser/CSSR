@@ -10,8 +10,12 @@
 #
 ####
 
+
+
 #####
-# 1. Pair Assignment
+# 1. Pair Assignment - Data Frame 2: Swiss Data Set
+# Units: Percentages
+# Source: Swiss Fertility and Socioeconomic Indicators (1888), R Data Set
 #####
 
 # README.md file
@@ -26,12 +30,12 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('base', 'repmis', 'knitr', 'rmarkdown', 'WDI')
+packages <- c('repmis', 'knitr', 'rmarkdown', 'ggplot2', 'pastecs')
 for (p in packages) {
-  if (p %in% installed.packages()[,1:4]) require(p, character.only=T)
+  if (p %in% installed.packages()) require(p, character.only=TRUE) # what does that [] mean
   else {
     install.packages(p)
-    require(p, character.only=T)
+    require(p, character.only=TRUE)
   }
 }
 repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
@@ -47,3 +51,52 @@ rm(wrkdir)
 # Import data frames
 
 swiss <- as.data.frame(swiss) # rename Variable names
+
+plot(swiss$Fertility, swiss$Education)
+
+# Initial Descriptive Stats
+summary(swiss$Fertility)
+summary(swiss$Education)
+
+
+
+
+
+
+# Plot fertility and education
+ggplotSwiss <- function(fit){
+  ggplot(swiss, aes(swiss$Fertility, swiss$Education)) +
+    geom_point(aes) +
+    scale_colour_discrete(name="whatever goes here") +
+    stat_smooth(method = "lm", col = "black") +
+    labs(title = paste("Adj. R2 = ",signif(summary(fit)$adj.r.squared, 3),
+                       "Intercept =", signif(fit@coef[[1]],3 ),
+                       "Slope =", signif(fit$coef[[2]], 1),
+                       "P =", signif(summary(fit)$coef[2,4], 2))
+}
+# FitOfData <- lm(swiss$Fertility ~ swiss$Education, data = ) # What to do here?
+# ggplotRegression(FitOfData)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
