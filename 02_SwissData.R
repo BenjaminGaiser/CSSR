@@ -50,7 +50,8 @@ rm(wrkdir)
 
 # Import data frames
 
-swiss <- as.data.frame(swiss) # rename Variable names
+swiss <- as.data.frame(swiss) # rename Variable names ***Why do we need to 
+# rename variables?
 
 plot(swiss$Fertility, swiss$Education)
 
@@ -60,37 +61,25 @@ summary(swiss$Education)
 
 
 
+# Did not create similar factor variable as in 538 data
 
 
-
-# Plot fertility and education
-ggplotSwiss <- function(fit){
-  ggplot(swiss, aes(swiss$Fertility, swiss$Education)) +
-    geom_point(aes) +
+# Plot fertility and education -- couldn't get this to work, so opted for simple qplot
+ggplotRegSwiss <- function(fit){
+  ggplot(swiss, aes(Fertility, Education)) +
+    geom_point(aes(colour = "black")) +
     scale_colour_discrete(name="whatever goes here") +
     stat_smooth(method = "lm", col = "black") +
     labs(title = paste("Adj. R2 = ",signif(summary(fit)$adj.r.squared, 3),
-                       "Intercept =", signif(fit@coef[[1]],3 ),
-                       "Slope =", signif(fit$coef[[2]], 1),
-                       "P =", signif(summary(fit)$coef[2,4], 2))
+                       "Intercept =" ,signif(fit@coef[[1]],3 ),
+                       "Slope =" ,signif(fit$coef[[2]], 1),
+                       "P =" ,signif(summary(fit)$coef[2,4], 2))
 }
 # FitOfData <- lm(swiss$Fertility ~ swiss$Education, data = ) # What to do here?
 # ggplotRegression(FitOfData)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+qplot(swiss$Fertility, swiss$Education, colour = "orange", xlab = "Fertility", 
+      ylab = "Education")
 
 
 
