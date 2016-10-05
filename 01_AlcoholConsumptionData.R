@@ -52,7 +52,7 @@ rm(wrkdir)
 
 AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", 
                                stringsAsFactors = FALSE, na.strings = c("", "NA"))
-plot(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)
+plot(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol, xlab="Beer served", ylab="Pure alcohol consumption")
 
 # Initial Descriptive Statistics
 summary(AlcoholConsumption$beer_servings)
