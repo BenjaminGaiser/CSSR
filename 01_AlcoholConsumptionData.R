@@ -10,8 +10,12 @@
 #
 ####
 
+# http://www.statmethods.net/stats/descriptives.html
+
 #####
-# 1. Pair Assignment
+# 1. Pair Assignment - Data Frame 1: Alcohol Consumption 
+# Units: Average serving sizes per person  
+# Source: 538 from World Health Organisation, Global Information System on Alcohol and Health (GISAH), 2010
 #####
 
 # README.md file
@@ -26,12 +30,12 @@ options(max.print = 100)
 getOption("max.print")
 
 # Load packages and remove from global environment
-packages <- c('repmis', 'knitr', 'rmarkdown', 'ggplot2')
+packages <- c('repmis', 'knitr', 'rmarkdown', 'ggplot2', 'pastecs')
 for (p in packages) {
-  if (p %in% installed.packages()[,1:4]) require(p, character.only=T)
+  if (p %in% installed.packages()) require(p, character.only=TRUE) # what does that [] mean
   else {
     install.packages(p)
-    require(p, character.only=T)
+    require(p, character.only=TRUE)
   }
 }
 repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
@@ -48,29 +52,18 @@ rm(wrkdir)
 
 AlcoholConsumption <- read.csv("drinks.csv", header = TRUE, sep = ",", 
                                stringsAsFactors = FALSE, na.strings = c("", "NA"))
+plot(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)
 
-# For intuition
-#c <- ggplot(AlcoholConsumption, aes(beer_servings,
-#                                    total_litres_of_pure_alcohol))
-# Create heavy wine/spirit drinker categories and use as factor
-#d <- c + geom_point()
-# for size
-#c + geom_point(aes(size = qsec))
-
-#p + geom_point(aes(colour = factor(cyl)), size = 4) +
-#  geom_point(colour = "grey90", size = 1.5)
-
-#c + geom_point() + geom_smooth()
-#c + geom_point() + geom_smooth(method = "lm", se = FALSE)
-#c + geom_point() + geom_smooth(method = "lm", se = TRUE)
+# Initial Descriptive Statistics
 summary(AlcoholConsumption$beer_servings)
+summary(AlcoholConsumption$wine_servings)
+summary(AlcoholConsumption$spirit_servings)
 summary(AlcoholConsumption$total_litres_of_pure_alcohol)
 
 # Create heavy wine/spirit drinker categories and use as factor
-summary(AlcoholConsumption$wine_servings)
-AlcoholConsumption$WineCat1 <- cut(AlcoholConsumption$wine_servings, seq(0, 370, 50))
+AlcoholConsumption$WineCat1 <- cut(AlcoholConsumption$wine_servings, seq(0, 370, 100))
 summary(AlcoholConsumption$WineCat1)
-
+# one coloured gradient for wine consumption
 ggplotRegression <- function(fit){
   ggplot(AlcoholConsumption, aes(beer_servings, total_litres_of_pure_alcohol)) +
     geom_point(aes(colour = factor(AlcoholConsumption$WineCat1))) +
@@ -100,7 +93,7 @@ which(grepl("Australia", AlcoholConsumption$country)) # row 9
 # SubsetOfFiveCountries for graphs
 SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
 
-IndividualCountries <- ggplot(SubsetOfFiveCountries, 
-                              aes(beer_servings, total_litres_of_pure_alcohol))
-IndividualCountries + geom_point(aes(colour = factor(country))) +
+ggplot(SubsetOfFiveCountries,
+       aes(beer_servings, total_litres_of_pure_alcohol)) + 
+  geom_point(aes(colour = factor(country))) +
   scale_colour_discrete(name="Countries")
