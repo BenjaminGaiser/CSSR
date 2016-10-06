@@ -1,4 +1,4 @@
-# 1st Pair Assignment by Ben Gaiser & Jeremy Russel 
+# 1. Pair Assignment by Ben Gaiser & Jeremy Russel 
 10 October 2016
 
 ## Overview
