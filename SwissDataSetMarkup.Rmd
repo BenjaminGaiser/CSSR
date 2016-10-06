@@ -1,33 +1,23 @@
-####
-#
-# New R file for First Pair Assignment
-# Ben Gaiser and Jeremy Russell
-# 30 September 2016
-# R Data Package
-# cite R and R packages used
-#
-####
+---
+title: "First Pair Assignment Markdown, Swiss Data Set"
+author: "Ben Gaiser & Jeremy Russell"
+date: "10/6/2016"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
 
-
-#####
-# 1. Pair Assignment - Data Frame 2: Swiss Data Set
-# Units: Percentages
-# Source: Swiss Fertility and Socioeconomic Indicators (1888), R Data Set
-#####
-
-# README.md file
-# Human Readable
-# Include 2 R Core Data Sets
-# Relevant descriptive statistics
-# Dynamically Linked
-# Pull Request with another pair
-
-# Set global options for viewability
+## Set global options for viewability
+```{r}
 options(max.print = 100)
 getOption("max.print")
+```
 
-# Load packages and remove from global environment
+
+## Load packages and remove from global environment
+```{r}
 packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2', 'pastecs')
 for (p in packages) {
   if (p %in% installed.packages()) require(p, character.only=TRUE) # what does that [] mean
@@ -38,19 +28,26 @@ for (p in packages) {
 }
 repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
 rm(packages, p)
+```
 
-# Set working directories and remove from global environment
 
+## Set working directories and remove from global environment
+```{r}
 wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
             '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
 rm(wrkdir)
+```
 
-# Import data frames
 
+## Import data frames
+```{r}
 swiss <- as.data.frame(swiss)
+```
 
-# Initial Descriptive Stats
+
+## Initial Descriptive Stats
+```{r}
 summary(swiss$Fertility)
 summary(swiss$Education)
 describe(swiss$Fertility)
@@ -59,20 +56,26 @@ var(swiss$Fertility)
 var(swiss$Education)
 sd(swiss$Fertility)
 sd(swiss$Education)
+```
 
-# Plot fertility and education with q and barplots. Note: a barplot didn't work with 
-# the data for swiss$Fertility. It's basically completely flat.
 
+## Plot fertility and education with q and barplots. Note: a barplot didn't work with the data for swiss$Fertility. It's basically completely flat.
+```{r}
 qplot(swiss$Fertility, swiss$Education, xlab = "Fertility", 
       ylab = "Education")
+```
 
-#Need to add Swiss canton names to graph below
+
+## Need to add Swiss canton names to graph below
+```{r}
 EducationTable <- table(swiss$Education)
 barplot(EducationTable, main="Swiss Education Rates",
         xlab="", col=c("red"))
+```
 
 
-# Plot fertility and education with ggplot
+## Plot fertility and education with ggplot
+```{r}
 ggplotRegSwiss <- function(fit){
   ggplot(swiss, aes(Fertility, Education)) +
     geom_point() +
@@ -85,10 +88,4 @@ ggplotRegSwiss <- function(fit){
 }
 FitOfDataSwiss <- lm(Fertility ~ Education, data = swiss)
 ggplotRegSwiss(FitOfDataSwiss)
-
-
-
-
-
-
-
+```

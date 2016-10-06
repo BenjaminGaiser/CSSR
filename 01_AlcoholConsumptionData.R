@@ -60,7 +60,7 @@ describe(AlcoholConsumption)
 # Create heavy wine/spirit drinker categories and use as factor
 AlcoholConsumption$WineCat1 <- cut(AlcoholConsumption$wine_servings, seq(0, 370, 100))
 summary(AlcoholConsumption$WineCat1)
-# one coloured gradient for wine consumption
+# One coloured gradient for wine consumption
 ggplotRegression <- function(fit){
   ggplot(AlcoholConsumption, aes(beer_servings, total_litres_of_pure_alcohol)) +
     geom_point(aes(colour = factor(AlcoholConsumption$WineCat1))) +
@@ -74,7 +74,7 @@ ggplotRegression <- function(fit){
 FitOfData <- lm(total_litres_of_pure_alcohol ~ beer_servings, data=AlcoholConsumption)
 ggplotRegression(FitOfData)
 
-# Who drinks the most and the least amount of total litres of pure alcohol
+# Who drinks the most and the least amounts of total litres of pure alcohol?
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol) # row 16
 head(AlcoholConsumption[16,]) # Belarus
 which.min(AlcoholConsumption$total_litres_of_pure_alcohol) # row 1
