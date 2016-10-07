@@ -14,7 +14,7 @@ This HTML is created using @R-knitr and @R-rmarkdown.
 
 ### Data Gathering process 
 
-Before going into our analysis, we make sure that all the required packages are installed. If they aren't this loop is installing them automatically.
+Before going into our analysis, we make sure that all the required packages are installed. The following loop is a simple if-else loop that does check whether the packages are installed and if not, then installs them.
 
 ```{r message=FALSE}
 packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2')
@@ -46,7 +46,7 @@ repmis::set_valid_wd(wrkdir)
 rm(packages, p, wrkdir)
 ```
 
-Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). Swiss is a core R data frame. We are using the specific SHA1 hash for the fivethirtyeight data set for better reproducibility.
+The alcohol consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). Swiss is a core R data frame. We are using the specific SHA1 hash for the fivethirtyeight data set for better reproducibility.
 
 ```{r message=FALSE}
 URL <- paste0('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv') 
@@ -73,21 +73,21 @@ swiss <- as.data.frame(swiss)
 
 #### What the data look like - Initial Descriptive Statistics
 
-We use R's base command summary as well as the more advanced command describe @R-Hmisc.
+We use R's base command summary as well as the more advanced command describe from @R-Hmisc for initial descriptive statistics to get a feel for the data.
 
 ```{r message=FALSE}
 summary(AlcoholConsumption)
 describe(AlcoholConsumption)
 ```
 
-Who drinks the most in total litres of pure alcohol? The answer is row 16 or Belarus.
+Similarly, we could look at a specific variable and look up for example who drinks the most in total litres of pure alcohol. The answer is row 16, i.e. Belarus.
 
 ```{r message=FALSE}
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol)
 head(AlcoholConsumption[16,])
 ```
 
-Who drinks the least in total litres of pure alcohol? The answer is row 1 or Afghanistan.
+The least is drunk by row 1, i.e. Afghanistan.
 
 ```{r message=FALSE}
 which.min(AlcoholConsumption$total_litres_of_pure_alcohol) 
@@ -96,7 +96,7 @@ head(AlcoholConsumption[1,])
 
 ### Hypothesis: Beer is the main driver of total litres of pure alcohol consumed per country
 
-Looking at the correlation to see if hypothesis is accurate, we can see that beer seems to be most closely correlated to total litres of pure alcohol with (0.84), whereas wine servings and spirits servings are similarly correlated (0.67 vs. 0.65, respectively).
+To see if our hypothesis is accurate, we can look at the correlations between the three variables of servings (beer, wine and spirits) and the total litres of pure alochol that is drunk in each country. We then find that indeed beer is the strongest correlated (0.84), while wine and spirits are similarly correlated (0.67 vs. 0.65, respectively. 
 
 ```{r message=FALSE}
 cor(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.84
@@ -104,7 +104,7 @@ cor(AlcoholConsumption$wine_servings, AlcoholConsumption$total_litres_of_pure_al
 cor(AlcoholConsumption$spirit_servings, AlcoholConsumption$total_litres_of_pure_alcohol)  # 0.65
 ```
 
-# Plotting our findings in a scatterplot with a line of best fit and the 95% confidence interval
+#### We can plot these findings in a scatterplot in order to get a visualised understanding of the correlation.
 
 Step 1: Creating a function for plotting a ggplot using @R-ggplot2.
 
@@ -132,7 +132,9 @@ Step 3: Plotting the graph.
 ggplotRegAlcCons(FitOfData)
 ```
 
-### Analyzing five countries of interest to see how they differ in their beer servings values.
+We can clearly see that this is a linear relationship with a high significance (p-value < 0.01) and a high Adj.R²-value of around 70 %. 
+
+#### Analyzing five countries of interest to see how they differ in their values of beer servings and total litres of pure alcohol.
 
 Finding Germany, USA, South Africa, China and Australia.
 
@@ -144,13 +146,13 @@ which(grepl('China', AlcoholConsumption$country)) # row 37
 which(grepl('Australia', AlcoholConsumption$country)) # row 9
 ```
 
-Subsetting the Data 'AlcoholConsumption' for ease of commanding.
+Subsetting the Data 'AlcoholConsumption' for ease of the next commands.
 
 ```{r message=FALSE}
 SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
 ```
 
-Plotting our findings in a Scatterplot, we see that Germany drinks most out of the five countries on both variables.
+Plotting our findings in a Scatterplot, we see that Germany drinks the most out of the five countries on both beer and total litres of pure alcohol.
 
 ```{r message=FALSE}
 ggplot(SubsetOfFiveCountries,
@@ -175,7 +177,7 @@ summary(swiss)
 
 ### Hypothesis: Catholics have a higher fertility rate than Protestants.
 
-A closer look at the initial descriptive statistics of our variables of interest.
+First, we have a closer look at the initial descriptive statistics of our variables of interest.
 
 ```{r message=FALSE}
 describe(swiss$Fertility)
@@ -186,15 +188,13 @@ sd(swiss$Fertility)
 sd(swiss$Catholic)
 ```
 
-Catholic shows high variance and standard deviation for a continuous variable of between 0 and 100.
-
-Now we can plot both variables to see their relationship.
+The variable 'Catholic' shows high variance and standard deviation for a continuous variable of between 0 and 100. Let's plot the relationship in order to see how the relationship looks.
 
 ```{r message=FALSE}
 ggplot(swiss, aes(Catholic, Fertility)) + geom_point()
 ```
 
-Adding a line of best fit, we can see that this relationship is significant, explaining 20 % of the variance (R-value).
+Adding a line of best fit, we can see that this relationship is significant, explaining 20 % of the variance (R-value). Yet, the striking thing is the clear divide between mostly Protestant and mostly Catholic cantons, except of four "outliers in the middle"
 
 ```{r message=FALSE}
 ggplotRegSwiss <- function(fit){
@@ -210,7 +210,7 @@ FitOfDataSwiss <- lm(Fertility ~ Catholic, data = swiss)
 ggplotRegSwiss(FitOfDataSwiss)
 ```
 
-### Which cantons are neither mostly Protestant nor mostly Catholic?
+#### Which cantons are neither mostly Protestant nor mostly Catholic?
 
 Step 1: Creating a factor variable with four different groups.
 
@@ -218,7 +218,7 @@ Step 1: Creating a factor variable with four different groups.
 swiss$CatholicCat <- cut(swiss$Catholic, seq(0, 100, 25))
 ```
 
-Step 2: Changing the factor variable into a character variable for renaming the rownames.
+Step 2: Changing the factor variable into a character variable in order to rename the rownames.
 
 ```{r message=FALSE}
 swiss$CatholicCat <- as.character(swiss$CatholicCat)
