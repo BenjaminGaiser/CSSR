@@ -5,8 +5,13 @@
 # Purpose: Some preliminary descriptive statistics for our two data frames
 #####
 
+# Setting our working directory
+wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR', 
+            '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
+repmis::set_valid_wd(wrkdir)
+
 # Executing the Data Gathering File
-source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGathering.R')
+source('DataGathering.R')
 
 #####
 # Data Frame 1: Alcohol Consumption 
@@ -20,6 +25,9 @@ source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGatheri
 # What the data look like - Initial Descriptive Statistics
 summary(AlcoholConsumption)
 describe(AlcoholConsumption)
+
+#More descriptive statistics 
+stat.desc(AlcoholConsumption)
 
 # Who drinks the most in total litres of pure alcohol?
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol)
