@@ -5,7 +5,7 @@
 This is the repository that [Jeremy](https://github.com/jrus87) and [I](https://github.com/BenjaminGaiser) are using for the assingments for  [MPP-E1180: Introduction to Collaborative Social Science Data Analysis](https://github.com/HertieDataScience) at the Hertie School of Governance. We welcome any feedback or comments and you can get in touch with us via our GitHub accounts or by submitting a pull request. 
 
 ## The Repository
-This repository offers you all of the R Code Files that we have used in order to create our [R-Markdown]'insert link here' file. These include our [Data Gathering file](https://github.com/BenjaminGaiser/CSSR/blob/master/DataGathering.R) and a separate but dynamically linked [Data Processing file](https://github.com/BenjaminGaiser/CSSR/blob/master/DataProcessing.R) as well as our final [HTML version]'insert link here'that cites the packages that we have used for the analysis.
+This repository offers you all of the R Code Files that we have used in order to create our R-Markdown files for [data gathering](https://github.com/BenjaminGaiser/CSSR/blob/master/DataGathering.Rmd) and [data processing]((https://github.com/BenjaminGaiser/CSSR/blob/master/DataProcessing.Rmd). These also include our R-Files for the [Data Gathering file](https://github.com/BenjaminGaiser/CSSR/blob/master/DataGathering.R) and a separate but dynamically linked [Data Processing file](https://github.com/BenjaminGaiser/CSSR/blob/master/DataProcessing.R) as well as our final [HTML version](https://github.com/BenjaminGaiser/CSSR/blob/master/DataProcessing.html) that cites the packages that we have used for the analysis.
 
 ## Assignment
 The [first assignment](https://github.com/HertieDataScience/SyllabusAndLectures/blob/master/README.md) states the following:

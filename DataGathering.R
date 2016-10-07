@@ -19,7 +19,7 @@ for (p in packages) {
 repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
 
 # Setting our working directory
-wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
+wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR', 
             '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
 

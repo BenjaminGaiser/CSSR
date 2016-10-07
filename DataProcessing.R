@@ -6,7 +6,7 @@
 #####
 
 # Executing the Data Gathering File
-source('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR/DataGathering.R')
+source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGathering.R')
 
 #####
 # Data Frame 1: Alcohol Consumption 
