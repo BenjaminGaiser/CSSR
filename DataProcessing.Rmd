@@ -1,0 +1,216 @@
+---
+title: "Data Processing"
+author: "Ben Gaiser & Jeremy Russell"
+date: "10/7/2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Executing the Data Gathering File
+
+```{r message=FALSE}
+source('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR/DataGathering.R')
+```
+
+
+# Data Frame 1: Alcohol Consumption
+## Units: Avergae serving sizes per person
+## Source: 538 from World Health Organisation, Global Information System on Alcohol and Health (GISAH), 2010
+## Variables of interest: 
+### Independent Variable X: beer servings
+### Dependent Variable Y: total litres of pure alcohol
+
+
+
+## What the data look like - Initial Descriptive Statistics
+
+```{r message=FALSE}
+summary(AlcoholConsumption)
+describe(AlcoholConsumption)
+```
+
+## Who drinks the most in total litres of pure alcohol?
+
+```{r message=FALSE}
+which.max(AlcoholConsumption$total_litres_of_pure_alcohol)
+```
+
+## The answer is row 16, i.e. Belarus
+
+```{r message=FALSE}
+head(AlcoholConsumption[16,])
+```
+
+## Who drinks the least in total litres of pure alcohol?
+
+```{r message=FALSE}
+which.min(AlcoholConsumption$total_litres_of_pure_alcohol) 
+```
+
+## The answer is row 1, i.e. Afghanistan
+```{r message=FALSE}
+head(AlcoholConsumption[1,])
+```
+
+## Hypothesis: Beer is the main driver of total litres of pure alcohol consumed
+## per country
+
+## Looking at the correlation to see if hypothesis is accurate
+
+```{r message=FALSE}
+cor(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.84
+cor(AlcoholConsumption$wine_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.67
+cor(AlcoholConsumption$spirit_servings, AlcoholConsumption$total_litres_of_pure_alcohol)  # 0.65
+```
+
+## It seems that beer servings are most closely correlated to total litres of
+## pure alcohol
+
+## Plotting our findings in a scatterplot with a line of best fit and the 95%
+## confidence interval
+
+## Step 1: Creating a function for plotting a ggplot
+
+```{r message=FALSE}
+ggplotRegAlcCons <- function(fit){
+  ggplot(AlcoholConsumption, aes(beer_servings, total_litres_of_pure_alcohol)) +
+    geom_point(colour = 'blue') +
+    stat_smooth(method = 'lm', col = 'red', size=0.75) +
+    labs(title = paste('Adj R2 = ',signif(summary(fit)$adj.r.squared, 3),
+                       'Intercept =',signif(fit$coef[[1]],3 ),
+                       ' Slope =',signif(fit$coef[[2]], 1),
+                       ' P =',signif(summary(fit)$coef[2,4], 2)))
+}
+```
+
+## Step 2: Running the linear regression for the line of best fit
+
+```{r message=FALSE}
+FitOfData <- lm(total_litres_of_pure_alcohol ~ beer_servings, data=AlcoholConsumption)
+```
+
+## Step 3: Plotting the graph
+
+```{r message=FALSE}
+ggplotRegAlcCons(FitOfData)
+```
+
+## Analyzing five countries of interest to see how they differ in their beer servings values
+
+## Finding Germany, USA, South Africa, China and Australia
+
+```{r message=FALSE}
+which(grepl('Germany', AlcoholConsumption$country)) # row 66
+which(grepl('USA', AlcoholConsumption$country)) # row 185
+which(grepl('South Africa', AlcoholConsumption$country)) # row 160
+which(grepl('China', AlcoholConsumption$country)) # row 37
+which(grepl('Australia', AlcoholConsumption$country)) # row 9
+```
+
+## Subsetting the Data 'AlcoholConsumption' for ease of commanding
+
+```{r message=FALSE}
+SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
+```
+
+## Plotting our findings in a Scatterplot, we see that Germany drinks most out of the five countries on both variables
+
+```{r message=FALSE}
+ggplot(SubsetOfFiveCountries,
+       aes(beer_servings, total_litres_of_pure_alcohol)) + 
+  geom_point(aes(colour = factor(country))) +
+  scale_colour_discrete(name='Countries')
+```
+
+# Data Frame 2: Swiss Data Set
+## Source: Swiss Fertility and Socioeconomic Indicators (1888), R Data Set
+## Variables of interest: 
+### Independent Variable X: Catholic - % as opposed to Protestant
+### Dependent Variable Y: Fertility - lg, common standardized fertility measure
+
+## What the data look like - Initial Descriptive Statistics
+summary(swiss)
+
+## Hypothesis: Catholics have a higher fertility rate than Protestants
+
+## A closer look at the initial descriptive statistics of our variables of interest
+
+```{r message=FALSE}
+describe(swiss$Fertility)
+describe(swiss$Catholic)
+var(swiss$Fertility)
+var(swiss$Catholic)
+sd(swiss$Fertility)
+sd(swiss$Catholic)
+```
+
+## Catholic shows high variance and standard deviation for a continuous variable of between 0 and 100
+
+## Plotting both variables to see their relationship
+
+```{r message=FALSE}
+ggplot(swiss, aes(Catholic, Fertility)) + geom_point()
+```
+
+## Plot fertility and Catholic with ggplot
+
+```{r message=FALSE}
+ggplotRegSwiss <- function(fit){
+  ggplot(swiss, aes(Catholic, Fertility)) +
+    geom_point(colour = 'blue') +
+    stat_smooth(method = 'lm', col = 'red', size=0.75) +
+    labs(title = paste('Adj R2 = ',signif(summary(fit)$adj.r.squared, 3),
+                       'Intercept =',signif(fit$coef[[1]],3 ),
+                       ' Slope =',signif(fit$coef[[2]], 1),
+                       ' P =',signif(summary(fit)$coef[2,4], 2)))
+}
+FitOfDataSwiss <- lm(Fertility ~ Catholic, data = swiss)
+ggplotRegSwiss(FitOfDataSwiss)
+```
+
+## Despite outliers, this is still a significant relationship, explaining 20 % of the variance (R-value)
+
+## Which cantons are neither mostly Protestant nor mostly Catholic?
+
+## Step 1: Creating a factor variable with four different groups
+
+```{r message=FALSE}
+swiss$CatholicCat <- cut(swiss$Catholic, seq(0, 100, 25))
+```
+
+## Step 2: Changing the factor variable into a character variable for renaming the rownames
+
+```{r message=FALSE}
+swiss$CatholicCat <- as.character(swiss$CatholicCat)
+```
+
+## Step 3: Renaming the rownames
+
+```{r message=FALSE}
+swiss$CatholicCat[swiss$CatholicCat=='(0,25]'] <- 'Protestant'
+swiss$CatholicCat[swiss$CatholicCat=='(25,50]'] <- 'Protestant to Catholic'
+swiss$CatholicCat[swiss$CatholicCat=='(50,75]'] <- 'Catholic to Protestant'
+swiss$CatholicCat[swiss$CatholicCat=='(75,100]'] <- 'Catholic'
+```
+
+## Step 4: Finding the cantons which are 'Protestant to Catholic' and 'Catholic to Protestant'
+
+```{r message=FALSE}
+which(grepl('Protestant to Catholic', swiss$CatholicCat)) # 4 and 45
+which(grepl('Catholic to Protestant', swiss$CatholicCat)) # 46 and 47
+```
+
+## Step 5: Searching the names
+
+```{r message=FALSE}
+swiss[c(4,45:47),]
+```
+
+## Moutier, V. De Geneve, Rive Droite and Rive Gauce are the only cantons where there is at least a third of the population that does not belong to the majority religion
+
+
+
+

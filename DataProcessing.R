@@ -1,7 +1,7 @@
 #####
 # Data Processing File
-# Ben Gaiser and Jeremy Russel
-# 10 October 2016
+# Ben Gaiser and Jeremy Russell
+# 7 October 2016
 # Purpose: Some preliminary descriptive statistics for our two data frames
 #####
 
@@ -17,31 +17,31 @@ source('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR/DataGathering.R'
 #   Dependent Variable Y: 'total_litres_of_pure_alcohol'
 #####
 
-# How does the data look like - Initial Descriptive Statistics
+# What the data look like - Initial Descriptive Statistics
 summary(AlcoholConsumption)
 describe(AlcoholConsumption)
 
-# Who drinks the most amounts of total litres of pure alcohol?
+# Who drinks the most in total litres of pure alcohol?
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol)
-# The answer is row 16 or better said Belarus.
+# The answer is row 16, i.e. Belarus
 head(AlcoholConsumption[16,])
-# Who drinks the least amounts of total litres of pure alcohol?
+# Who drinks the least in  total litres of pure alcohol?
 which.min(AlcoholConsumption$total_litres_of_pure_alcohol) 
-# The answer is row 1 or better said Afghanistan.
+# The answer is row 1, i.e. Afghanistan
 head(AlcoholConsumption[1,])
 
 #####
-# Hypothesis: Beer is the main driver for total litres of pure alcohol consumed per country
+# Hypothesis: Beer is the main driver of total litres of pure alcohol consumed per country
 #####
 
-# Looking at the Correlation to see if Hypothesis might be right
+# Looking at the correlation to see if hypothesis is accurate
 cor(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.84
 cor(AlcoholConsumption$wine_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.67
 cor(AlcoholConsumption$spirit_servings, AlcoholConsumption$total_litres_of_pure_alcohol)  # 0.65
 # It seems that beer_servings are most closely correlated to total_litres_of_pure_alcohol
 
 #####
-# Plotting our finding in a scatterplot with a line of best fit and the 95 % confidence interval
+# Plotting our findings in a scatterplot with a line of best fit and the 95 % confidence interval
 #####
 
 # 1. Step: Creating a function for plotting a ggplot
@@ -60,10 +60,10 @@ FitOfData <- lm(total_litres_of_pure_alcohol ~ beer_servings, data=AlcoholConsum
 
 # 3. Step: Plotting the graph
 ggplotRegAlcCons(FitOfData)
-# Beer seems indeed to explain the story well with an Adj.R²-value of 0.70
+# Beer seems to explain the story well with an Adj.R-value of 0.70
 
 #####
-# Taking five countries of interest to see how they differ in their 'beer_servings' values
+# Analyzing five countries of interest to see how they differ in their 'beer_servings' values
 #####
 
 # Finding Germany, USA, South Africa, China and Australia
@@ -76,7 +76,7 @@ which(grepl('Australia', AlcoholConsumption$country)) # row 9
 # Subsetting the Data 'AlcoholConsumption' for ease of commanding
 SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
 
-# Plotting our finding in a Scatterplot, we see that Germany drinks most out of the five countries on both variables
+# Plotting our findings in a Scatterplot, we see that Germany drinks most out of the five countries on both variables
 ggplot(SubsetOfFiveCountries,
        aes(beer_servings, total_litres_of_pure_alcohol)) + 
   geom_point(aes(colour = factor(country))) +
@@ -85,19 +85,19 @@ ggplot(SubsetOfFiveCountries,
 #####
 # Data Frame 2: Swiss Data Set 
 # Variables of interest: 
-#   Independent Variable X: 'Catholic': % of males involved in agriculture as occupation
+#   Independent Variable X: 'Catholic': % Catholic as opposed to Protestant
 #   Dependent Variable Y: 'Fertility': lg, 'common standardized fertility measure'
 # Source: Swiss Fertility and Socioeconomic Indicators (1888), R Data Set
 #####
 
-# How does the data look like - Initial Descriptive Statistics
+# What the data look like - Initial Descriptive Statistics
 summary(swiss)
 
 #####
 # Hypothesis: Catholics have a higher fertility rate than Protestants
 #####
 
-# Look closer at the initial descriptives statistics of our variables of interest
+# A closer look at the initial descriptive statistics of our variables of interest
 describe(swiss$Fertility)
 describe(swiss$Catholic)
 var(swiss$Fertility)
@@ -106,7 +106,7 @@ sd(swiss$Fertility)
 sd(swiss$Catholic)
 # 'Catholic' shows high variance and standard deviation for a continuous variable of between 0 and 100
 
-# Plotting both variables to get see for their relationship
+# Plotting both variables to see their relationship
 ggplot(swiss, aes(Catholic, Fertility)) + geom_point()
 
 # Plot fertility and Catholic with ggplot
@@ -121,10 +121,11 @@ ggplotRegSwiss <- function(fit){
 }
 FitOfDataSwiss <- lm(Fertility ~ Catholic, data = swiss)
 ggplotRegSwiss(FitOfDataSwiss)
-# Despite outliers, this is still a significant relationship, explaining 20 % of the variance (R²-value)
+
+# Despite outliers, this is still a significant relationship, explaining 20 % of the variance (R-value)
 
 #####
-# Which cantons are not part of the either almost total Protestant, or almost Catholic branches?
+# Which cantons are neither mostly Protestant nor mostly Catholic?
 #####
 
 # 1. Step: Creating a factor variable with four different groups
@@ -142,4 +143,4 @@ which(grepl('Catholic to Protestant', swiss$CatholicCat)) # 46 and 47
 # 5. Step: Searching the names
 swiss[c(4,45:47),]
 # Moutier, V. De Geneve, Rive Droite and Rive Gauce are the only cantons where there is at least a third of the population
-# that does not belong into the majority religion
+# that does not belong to the majority religion

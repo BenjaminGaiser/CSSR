@@ -1,12 +1,17 @@
-#####
-# Data Gathering File
-# Ben Gaiser and Jeremy Russell
-# 7 October 2016
-# Purpose: Before starting the data processing, we load certain packages, 
-# set our directories and load the data frames
-#####
+---
+title: "Data Gathering"
+author: "Ben Gaiser & Jeremy Russell"
+date: "10/7/2016"
+output: html_document
+---
 
-# Installing packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Installing packages
+
+```{r message=FALSE}
 packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2', 'pastecs', 'RCurl')
 for (p in packages) {
   if (p %in% installed.packages()) require(p, character.only=TRUE) 
@@ -15,21 +20,32 @@ for (p in packages) {
     require(p, character.only=TRUE)
   }
 }
-# Creating a BibTex file
-repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
+```
 
-# Setting our working directory
+## Creating a BibTex file
+
+```{r message=FALSE}
+repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
+```
+
+## Setting our working directory
+
+```{r message=FALSE}
 wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
             '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
+```
 
-# Removing from global environment for better readability
+## Removing from global environment for better readability
+
+```{r message=FALSE}
 rm(packages, p, wrkdir)
+```
 
-#####
-# Loading the data frames
-# Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). 
-# Swiss is a core R data frame
-#####
+## Loading the data frames:
+#### Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). Swiss is a core R data frame
+
+```{r message=FALSE}
 AlcoholConsumption <- read.csv(text = getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv"))
 swiss <- as.data.frame(swiss)
+```
