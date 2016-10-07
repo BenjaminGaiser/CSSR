@@ -31,5 +31,7 @@ rm(packages, p, wrkdir)
 # Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). 
 # Swiss is a core R data frame
 #####
-AlcoholConsumption <- read.csv(text = getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv"))
+URL <- paste0('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv')
+AlcoholConsumption <- repmis::source_data(URL,
+                            sha1 = 'af869c65cccfc989a3b8c0a21752e4c0ba25bd3d')
 swiss <- as.data.frame(swiss)
