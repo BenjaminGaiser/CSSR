@@ -1,18 +1,23 @@
 ---
-title: "Combined Data Markup"
+title: "Assignment 1"
 author: "Ben Gaiser & Jeremy Russell"
 date: "10/7/2016"
 output: html_document
+bibliography: RpackageCitations.bib
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Installing packages
+This HTML is created using @R-knitr and @R-rmarkdown.
+
+### Data Gathering process 
+
+Before going into our analysis, we make sure that all the required packages are installed. If they aren't this loop is installing them automatically.
 
 ```{r message=FALSE}
-packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2', 'pastecs', 'RCurl')
+packages <- c('repmis', 'knitr', 'rmarkdown', 'Hmisc', 'ggplot2')
 for (p in packages) {
   if (p %in% installed.packages()) require(p, character.only=TRUE) 
   else {
@@ -22,80 +27,75 @@ for (p in packages) {
 }
 ```
 
-### Creating a BibTex file
+Then we are using @R-repmis for loading our R packages, while simultaneously preparing a file from which we can cite our packages that we use. 
 
 ```{r message=FALSE}
 repmis::LoadandCite(packages, file = 'RpackageCitations.bib')
 ```
 
-### Setting our working directory
+Setting our working directory.
 
 ```{r message=FALSE}
-wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/data/alcohol-consumption', 
+wrkdir <- c('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR', 
             '~/Hertie School/Fall 2016/CollaborativeSocialScienceDataAnalysis/CSSR')
 repmis::set_valid_wd(wrkdir)
 ```
 
-### Removing from global environment for better readability
 
-```{r message=FALSE}
+```{r include=FALSE}
 rm(packages, p, wrkdir)
 ```
 
-### Loading the data frames:
-###### Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). Swiss is a core R data frame
+Alcohol Consumption data set is from fivethirtyeight (https://github.com/fivethirtyeight/data). Swiss is a core R data frame. We are using the specific SHA1 hash for the fivethirtyeight data set for better reproducibility.
 
 ```{r message=FALSE}
-AlcoholConsumption <- read.csv(text = getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv"))
+URL <- paste0('https://raw.githubusercontent.com/fivethirtyeight/data/master/alcohol-consumption/drinks.csv')
+AlcoholConsumption <- repmis::source_data(URL,
+                            sha1 = 'af869c65cccfc989a3b8c0a21752e4c0ba25bd3d')
 swiss <- as.data.frame(swiss)
 ```
-### Executing the Data Gathering File
 
-```{r message=FALSE}
-source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGathering.R')
+
+```{r include=FALSE}
+#source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGathering.R')
+# We have not included this in the HTML because we added the Data Gathering Process at the beginning. This does exactly the same and is used in our R-file. 
 ```
 
 
 ### Data Frame 1: Alcohol Consumption
-###### Units: Avergae serving sizes per person
-###### Source: 538 from World Health Organisation, Global Information System on Alcohol and Health (GISAH), 2010
-###### Variables of interest: 
-###### Independent Variable X: beer servings
-###### Dependent Variable Y: total litres of pure alcohol
+##### Units: Avergae serving sizes per person
+##### Source: 538 from World Health Organisation, Global Information System on Alcohol and Health (GISAH), 2010
+##### Variables of interest: 
+#####  Independent Variable X: beer servings
+#####  Dependent Variable Y: total litres of pure alcohol
 
-### What the data look like - Initial Descriptive Statistics
+
+#### What the data look like - Initial Descriptive Statistics
+
+We use R's base command summary as well as the more advanced command describe @R-Hmisc.
 
 ```{r message=FALSE}
 summary(AlcoholConsumption)
 describe(AlcoholConsumption)
 ```
 
-### Who drinks the most in total litres of pure alcohol?
+Who drinks the most in total litres of pure alcohol? The answer is row 16 or Belarus.
 
 ```{r message=FALSE}
 which.max(AlcoholConsumption$total_litres_of_pure_alcohol)
-```
-
-### The answer is row 16, i.e. Belarus
-
-```{r message=FALSE}
 head(AlcoholConsumption[16,])
 ```
 
-### Who drinks the least in total litres of pure alcohol?
+Who drinks the least in total litres of pure alcohol? The answer is row 1 or Afghanistan.
 
 ```{r message=FALSE}
 which.min(AlcoholConsumption$total_litres_of_pure_alcohol) 
-```
-
-### The answer is row 1, i.e. Afghanistan
-```{r message=FALSE}
 head(AlcoholConsumption[1,])
 ```
 
 ### Hypothesis: Beer is the main driver of total litres of pure alcohol consumed per country
 
-### Looking at the correlation to see if hypothesis is accurate
+Looking at the correlation to see if hypothesis is accurate, we can see that beer seems to be most closely correlated to total litres of pure alcohol with (0.84), whereas wine servings and spirits servings are similarly correlated (0.67 vs. 0.65, respectively).
 
 ```{r message=FALSE}
 cor(AlcoholConsumption$beer_servings, AlcoholConsumption$total_litres_of_pure_alcohol)    # 0.84
@@ -103,11 +103,9 @@ cor(AlcoholConsumption$wine_servings, AlcoholConsumption$total_litres_of_pure_al
 cor(AlcoholConsumption$spirit_servings, AlcoholConsumption$total_litres_of_pure_alcohol)  # 0.65
 ```
 
-### It seems that beer servings are most closely correlated to total litres of pure alcohol
+# Plotting our findings in a scatterplot with a line of best fit and the 95% confidence interval
 
-### Plotting our findings in a scatterplot with a line of best fit and the 95% confidence interval
-
-### Step 1: Creating a function for plotting a ggplot
+Step 1: Creating a function for plotting a ggplot using @R-ggplot2.
 
 ```{r message=FALSE}
 ggplotRegAlcCons <- function(fit){
@@ -121,21 +119,21 @@ ggplotRegAlcCons <- function(fit){
 }
 ```
 
-### Step 2: Running the linear regression for the line of best fit
+Step 2: Running the linear regression for the line of best fit.
 
 ```{r message=FALSE}
 FitOfData <- lm(total_litres_of_pure_alcohol ~ beer_servings, data=AlcoholConsumption)
 ```
 
-### Step 3: Plotting the graph
+Step 3: Plotting the graph.
 
 ```{r message=FALSE}
 ggplotRegAlcCons(FitOfData)
 ```
 
-### Analyzing five countries of interest to see how they differ in their beer servings values
+### Analyzing five countries of interest to see how they differ in their beer servings values.
 
-### Finding Germany, USA, South Africa, China and Australia
+Finding Germany, USA, South Africa, China and Australia.
 
 ```{r message=FALSE}
 which(grepl('Germany', AlcoholConsumption$country)) # row 66
@@ -145,13 +143,13 @@ which(grepl('China', AlcoholConsumption$country)) # row 37
 which(grepl('Australia', AlcoholConsumption$country)) # row 9
 ```
 
-### Subsetting the Data 'AlcoholConsumption' for ease of commanding
+Subsetting the Data 'AlcoholConsumption' for ease of commanding.
 
 ```{r message=FALSE}
 SubsetOfFiveCountries <- AlcoholConsumption[c(9, 37, 66, 160, 185),]
 ```
 
-### Plotting our findings in a Scatterplot, we see that Germany drinks most out of the five countries on both variables
+Plotting our findings in a Scatterplot, we see that Germany drinks most out of the five countries on both variables.
 
 ```{r message=FALSE}
 ggplot(SubsetOfFiveCountries,
@@ -166,12 +164,15 @@ ggplot(SubsetOfFiveCountries,
 #### Independent Variable X: Catholic - % as opposed to Protestant
 #### Dependent Variable Y: Fertility - lg, common standardized fertility measure
 
-### What the data look like - Initial Descriptive Statistics
+
+#### What the data look like - Initial Descriptive Statistics
+```{r message=FALSE}
 summary(swiss)
+```
 
-### Hypothesis: Catholics have a higher fertility rate than Protestants
+### Hypothesis: Catholics have a higher fertility rate than Protestants.
 
-### A closer look at the initial descriptive statistics of our variables of interest
+A closer look at the initial descriptive statistics of our variables of interest.
 
 ```{r message=FALSE}
 describe(swiss$Fertility)
@@ -182,15 +183,15 @@ sd(swiss$Fertility)
 sd(swiss$Catholic)
 ```
 
-### Catholic shows high variance and standard deviation for a continuous variable of between 0 and 100
+Catholic shows high variance and standard deviation for a continuous variable of between 0 and 100.
 
-### Plotting both variables to see their relationship
+Now we can plot both variables to see their relationship.
 
 ```{r message=FALSE}
 ggplot(swiss, aes(Catholic, Fertility)) + geom_point()
 ```
 
-### Plot fertility and Catholic with ggplot
+Adding a line of best fit, we can see that this relationship is significant, explaining 20 % of the variance (R-value).
 
 ```{r message=FALSE}
 ggplotRegSwiss <- function(fit){
@@ -206,23 +207,21 @@ FitOfDataSwiss <- lm(Fertility ~ Catholic, data = swiss)
 ggplotRegSwiss(FitOfDataSwiss)
 ```
 
-#### Despite outliers, this is still a significant relationship, explaining 20 % of the variance (R-value)
-
 ### Which cantons are neither mostly Protestant nor mostly Catholic?
 
-#### Step 1: Creating a factor variable with four different groups
+Step 1: Creating a factor variable with four different groups.
 
 ```{r message=FALSE}
 swiss$CatholicCat <- cut(swiss$Catholic, seq(0, 100, 25))
 ```
 
-#### Step 2: Changing the factor variable into a character variable for renaming the rownames
+Step 2: Changing the factor variable into a character variable for renaming the rownames.
 
 ```{r message=FALSE}
 swiss$CatholicCat <- as.character(swiss$CatholicCat)
 ```
 
-#### Step 3: Renaming the rownames
+Step 3: Renaming the rownames.
 
 ```{r message=FALSE}
 swiss$CatholicCat[swiss$CatholicCat=='(0,25]'] <- 'Protestant'
@@ -231,17 +230,21 @@ swiss$CatholicCat[swiss$CatholicCat=='(50,75]'] <- 'Catholic to Protestant'
 swiss$CatholicCat[swiss$CatholicCat=='(75,100]'] <- 'Catholic'
 ```
 
-#### Step 4: Finding the cantons which are 'Protestant to Catholic' and 'Catholic to Protestant'
+Step 4: Finding the cantons which are 'Protestant to Catholic' and 'Catholic to Protestant'.
 
 ```{r message=FALSE}
 which(grepl('Protestant to Catholic', swiss$CatholicCat)) # 4 and 45
 which(grepl('Catholic to Protestant', swiss$CatholicCat)) # 46 and 47
 ```
 
-#### Step 5: Searching the names
+Step 5: Searching the names.
 
 ```{r message=FALSE}
 swiss[c(4,45:47),]
 ```
 
-#### Moutier, V. De Geneve, Rive Droite and Rive Gauce are the only cantons where there is at least a third of the population that does not belong to the majority religion
+##### Moutier, V. De Geneve, Rive Droite and Rive Gauce are the only cantons where there is at least a third of the population that does not belong to the majority religion.
+
+# References
+
+---
