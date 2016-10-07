@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+author: "Benjamin Gaiser"
+date: "4 Oktober 2016"
+output: html_document
+bibliography: RpackageCitations.bib
+---
+
+@CiteR
+
+# References
+
+---
+ @CiteR,
+ @R-ggplot2,
+ @R-Hmisc,
+ @R-knitr,
+ @R-pastecs,
+ @R-RCurl,
+ @R-repmis,
+ @R-rmarkdown
+
+  
