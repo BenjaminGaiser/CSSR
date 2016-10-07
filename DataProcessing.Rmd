@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Executing the Data Gathering File
 
 ```{r message=FALSE}
-source('C:/Users/Benji/Desktop/Statistics/Git/Repositories/CSSR/DataGathering.R')
+source('https://raw.githubusercontent.com/BenjaminGaiser/CSSR/master/DataGathering.R')
 ```
 
 
